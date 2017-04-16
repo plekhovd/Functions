@@ -50,6 +50,40 @@ table = as.data.frame(table(over(sites[sites[[period]] ==1,], watersheds)[,1]))
 analysis[[period]][analysis$watershed %in% table$Var1] = table$Freq 
 }  
 
+###graphs
+#stacked bar
+par(xpd=T, mar=par()$mar+c(0,0,0,6))
+x = barplot(prop,
+            col=cols,
+            xaxt="n",
+            width=1,
+            main = "Percentages of Dining/Food Ceramic Vessels",
+            bty = "L")
+labs = paste(names(sara))
+text(cex=1, x=x+0.25, y=-0.02, labels = labs, xpd=TRUE, srt=45, pos=2)
+legend("right", inset = c(-0.15, 0), fill=cols, legend=rownames(data), cex = 0.5, xpd = TRUE, bty = "n",
+       text.width = 0.25,
+       x.intersp = 0.25)
 
+dev.off()
+
+#grouped bar
+par(xpd=TRUE, mar=par()$mar+c(0,0,0,6))
+x = barplot(prop,
+            col=cols,
+            xaxt="n",
+            width=1,
+            beside = T,
+            main = "Percentages of Dining/Food Ceramic Vessels")
+labs = paste(names(sara))
+text(cex=0.75, x= colMeans(x)+0.25, y=-0.03, labels = labs, xpd=TRUE, srt=45, pos=2)
+legend("right", inset = c(-0.1, 0), fill=cols, legend=rownames(data), cex = 0.5, xpd = TRUE, bty = "n",
+       text.width = 0.25,
+       x.intersp = 0.25)
+
+#pie
+x = pie$V2
+labels = pie$V1
+pie(x, labels, radius = 2.5, main = "Faunal Finds", col = cols, clockwise = T)
 
 
