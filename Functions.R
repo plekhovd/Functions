@@ -86,4 +86,36 @@ x = pie$V2
 labels = pie$V1
 pie(x, labels, radius = 2.5, main = "Faunal Finds", col = cols, clockwise = T)
 
+#exif data
+library(exifr)
+
+dir = dir("/Users/danplekhov/Desktop/photos/photos", full.names=T)
+exifinfo = exifr(dir)[,81:83]
+
+write.csv(exifinfo, "/Users/danplekhov/Desktop/photoData.csv")
+
+#gpx data
+library(rgdal)
+
+list = ogrListLayers("/Users/danplekhov/Desktop/Waypoints_01-JUN-17.gpx")
+gpx_waypoints = readOGR("/Users/danplekhov/Desktop/Waypoints_01-JUN-17.gpx", layer = list[1])
+writeOGR(gpx_waypoints, dsn = "/Users/danplekhov/Desktop/", layer = "gpx_waypoints", driver = "ESRI Shapefile")
+
+#download files
+dest = "/Users/danplekhov/Desktop/Working Files/stonewalls/BU/2014 USDA NAIP Digital True Color Orthophotography"
+temp = tempfile()
+
+url = "http://www.rigis.org/data/img/2014usda/tif/BU"
+page = read_html(url)
+links = html_attr(html_nodes(page, "a"), "href")
+zipfiles = grep(".zip", links) 
+links = links[zipfiles]
+
+for(i in 1:length(links)){
+  download.file(paste0("http://www.rigis.org/", links[i]), destfile = paste0(temp,basename(links[i])), mode = "wb")
+  unzip(paste0(temp,basename(links[i])), files = paste0(file_path_sans_ext(basename(links[i])), ".tif"), exdir = dest)
+}
+
+
+
 
